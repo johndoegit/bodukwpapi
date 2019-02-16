@@ -8,6 +8,7 @@ include_once './jwt/src/BeforeValidException.php';
 include_once './jwt/src/ExpiredException.php';
 include_once './jwt/src/SignatureInvalidException.php';
 include_once './jwt/src/JWT.php';
+require_once("../../../wp-load.php");
 use \Firebase\JWT\JWT;
 
 
@@ -58,14 +59,48 @@ return print_r($decoded);
 //echo print_r($decoded->user_id);	
 }
 
+public function jwt_login($username){
 	
+$user = get_user_by('login', $username );
+// Redirect URL //
+	if ( !is_wp_error( $user ) )
+	{
+	    wp_clear_auth_cookie();
+	    wp_set_current_user ( $user->ID );
+	    wp_set_auth_cookie  ( $user->ID );
 	
+	    //$redirect_to = user_admin_url();
+	    //wp_safe_redirect( $redirect_to );
+	    //exit();
+	}	
+}
+
+
+public function jwt_login_check($username, $password){
+	 
+	$auth = wp_authenticate_username_password($user, $username, $password);
+
+	if (is_wp_error($auth)) {
 	
+	return 0;
 	
+	} else {
+	
+	return 1;
+		
+		
+	}
+}
+
+public function jwt_logout(){
+	return wp_clear_auth_cookie();
 }
 
 
 
-?>
+}//END OF CLASS
+
+
+ 
  
  
