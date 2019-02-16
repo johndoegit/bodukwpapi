@@ -1,26 +1,72 @@
 <?php
 
-// Create token header as a JSON string
-$header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+ 
+include('./jwt/JwtClass.php'); 
+ 
+$jwt = new JwtClass();
+//echo $jwt->jwt_encode();
+//echo $jwt->jwt_decode();
+//print_r($decoded);
+ 
+ 
+ 
+/* 
+$ch = curl_init();
 
-// Create token payload as a JSON string
-$payload = json_encode(['user_id' => 123]);
+curl_setopt($ch, CURLOPT_URL,"http://localhost/editor/workspace/wordpress/wp-login.php");
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS,"log=root&pwd=admin");
 
-// Encode Header to Base64Url String
-$base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+// In real life you should use something like:
+// curl_setopt($ch, CURLOPT_POSTFIELDS, 
+//          http_build_query(array('postvar1' => 'value1')));
 
-// Encode Payload to Base64Url String
-$base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+// Receive server response ...
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-// Create Signature Hash
-$signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, 'abC123!', true);
+$server_output = curl_exec($ch);
 
-// Encode Signature to Base64Url String
-$base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+curl_close ($ch);
 
-// Create JWT
-$jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+// Further processing ...
+echo print_r($server_output);
+*/
+require_once("../../../wp-load.php");
 
-echo $jwt; 
+$username = "root";
+$password = 'admin';
+$auth = wp_authenticate_username_password($user, $username, $password);
 
+if (is_wp_error($auth)) {
+
+echo 'not authenticated';
+
+} else {
+
+echo 'authenticated';
+
+}
+/*
+$username = "root";
+$user = get_user_by('login', $username );
+// Redirect URL //
+if ( !is_wp_error( $user ) )
+{
+    wp_clear_auth_cookie();
+    wp_set_current_user ( $user->ID );
+    wp_set_auth_cookie  ( $user->ID );
+
+    //$redirect_to = user_admin_url();
+    //wp_safe_redirect( $redirect_to );
+    //exit();
+}
+*/
 ?>
+  
+ 
+ 
+
+ 

@@ -12,7 +12,7 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class( 'blank-slate' ); ?>>
+<body <?php body_class( 'bodukwpapi' ); ?>>
 
 <?php while ( have_posts() ) : ?>
 
