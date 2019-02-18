@@ -37,7 +37,7 @@ public function jwt_decode($data){
 	$decoded = JWT::decode($data, self::key, array('HS256'));
 
 	if($decoded){
-		return print_r($decoded);	
+		return $decoded;	
 	}else{
 		return 'error!';
 	}
@@ -80,6 +80,83 @@ public function jwt_login_check($username, $password){
 		
 	}
 }
+
+public function get_post_image($id){
+	$image = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'single-post-thumbnail' ); 
+	return $image = $image[0];
+}
+
+public function get_all_post(){
+	//global $wpdb;
+	header('Content-Type: application/json');
+	
+	$query = new WP_Query('posts');
+	
+	/*
+	POST FIELDS
+	
+   ID": 21,
+  "post_author": "1",
+  "post_date": "2019-02-17 02:46:33",
+  "post_date_gmt": "2019-02-17 02:46:33",
+  "post_content": "<!-- wp:paragraph -->\n<p>asfafsafasf</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>fas</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>fas</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>f</p>\n<!-- /wp:paragraph -->",
+  "post_title": "afasfsafasf",
+  "post_excerpt": "",
+  "post_status": "publish",
+  "comment_status": "open",
+  "ping_status": "open",
+  "post_password": "",
+  "post_name": "afasfsafasf",
+  "to_ping": "",
+  "pinged": "",
+  "post_modified": "2019-02-18 10:13:18",
+  "post_modified_gmt": "2019-02-18 10:13:18",
+  "post_content_filtered": "",
+  "post_parent": 0,
+  "guid": "http://localhost/editor/workspace/wordpress/?p=21",
+  "menu_order": 0,
+  "post_type": "post",
+  "post_mime_type": "",
+  "comment_count": "0",
+  "filter": "raw"	
+  
+  
+	*/
+	$data = [];
+	$loop = 0;
+	foreach($query->posts as $val){
+		
+		 $data[$loop]['post_id'] = $val->ID;
+		 $data[$loop]['post_title'] = $val->post_title;
+		 $data[$loop]['post_content'] = $val->post_content;
+		 $data[$loop]['post_image'] = self::get_post_image($val->ID);
+		 $loop++;
+	}
+    return json_encode($data);
+	
+   //$value = [];
+   //while($query->have_posts()){
+   //   $query->the_post();
+
+		 //if (has_post_thumbnail( ) ){
+		 // $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); 
+		 // $image = $image[0];
+		 // $title = get_post_title($post->ID);
+		 //}else{
+		 // $image = '';	
+		 // $title = '';
+		 //}
+		 
+	  //$value['title'] = $title;
+	  //$value['thumb'] = $image;	
+	  	
+	  
+	  //}
+	  //return print_r($value);
+}
+
+
+
 
 public function jwt_logout(){
 	return wp_clear_auth_cookie();
